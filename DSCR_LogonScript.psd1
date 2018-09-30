@@ -4,7 +4,7 @@
     # RootModule = ''
 
     # Version number of this module.
-    ModuleVersion        = '0.0.1'
+    ModuleVersion        = '0.0.2'
 
     # ID used to uniquely identify this module
     GUID                 = '9ef12355-7e97-4d79-818f-69fc50bccc2a'
@@ -33,7 +33,7 @@
     PrivateData          = @{
         PSData = @{
 
-            Tags         = ('Logon script', 'DSC', 'DSCResource')
+            Tags         = ('LogonScript', 'DSC', 'DSCResource')
 
             LicenseUri   = 'https://github.com/mkht/DSCR_LogonScript/blob/master/LICENSE'
 
