@@ -67,11 +67,8 @@
             $local:ErrorActionPreference = 'Stop'
             if (-not (Test-Path -LiteralPath $using:ScriptPath -PathType Leaf)) {
                 Write-Warning ('"{0}" is not exist.' -f $using:ScriptPath)
-                return $false
             }
-            else {
-                return $true
-            }
+            return $true
         }
         GetScript  = {
             return @{
