@@ -1,4 +1,4 @@
-﻿Configuration LogonScript
+Configuration LogonScript
 {
     param
     (
