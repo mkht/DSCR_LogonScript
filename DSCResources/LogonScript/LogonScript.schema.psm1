@@ -100,7 +100,7 @@ Configuration LogonScript
             if (-not (Test-Path -LiteralPath $GptIniPath -PathType Leaf)) {
                 # Create gpt.ini if not exist.
                 ('[General]', "$TargetExtensionsName=[$TargetScriptCSE]", 'Version=65536') |`
-                    Out-File -FilePath $GptIniPath -Encoding Ascii
+                    Out-File -FilePath $GptIniPath -Encoding ascii
             }
             else {
                 $GptIniContent = Get-Content -LiteralPath $GptIniPath
@@ -125,7 +125,7 @@ Configuration LogonScript
                     $GptIniContent[$private:Index] = ('Version={0}' -f $NewVersionValue)
                 }
 
-                $GptIniContent | Set-Content -Path $GptIniPath -Encoding Ascii -Force
+                $GptIniContent | Set-Content -Path $GptIniPath -Encoding ascii -Force
             }
         }
         TestScript = {
@@ -176,7 +176,7 @@ Configuration LogonScript
         Section   = $Type
         Key       = ('{0}CmdLine' -f $Index)
         Value     = $ScriptPath
-        Encoding  = 'Ascii'
+        Encoding  = 'unicode'
         DependsOn = '[Script]IncrementGptIniVersion'
     }
 
@@ -185,7 +185,7 @@ Configuration LogonScript
         Section   = $Type
         Key       = ('{0}Parameters' -f $Index)
         Value     = $Parameters
-        Encoding  = 'Ascii'
+        Encoding  = 'unicode'
         DependsOn = '[Script]IncrementGptIniVersion'
     }
 }
