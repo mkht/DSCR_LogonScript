@@ -13,6 +13,11 @@ Configuration LogonScript
         $RunAt = 'Logon',
 
         [Parameter()]
+        [ValidateSet('Command', 'PowerShell')]
+        [string]
+        $ScriptType = 'Command',
+
+        [Parameter()]
         [ValidateRange(0, 99)]
         [int]
         $Index = 0,
@@ -36,8 +41,8 @@ Configuration LogonScript
     $GroupPolicyPath = 'C:\Windows\System32\GroupPolicy'
     $GptIniPath = Join-Path -Path $GroupPolicyPath -ChildPath 'gpt.ini'
 
-    $UserScriptsIniPath = Join-Path -Path $GroupPolicyPath -ChildPath '\User\Scripts\scripts.ini'
-    $MachineScriptsIniPath = Join-Path -Path $GroupPolicyPath -ChildPath '\Machine\Scripts\scripts.ini'
+    $UserScriptsIniPath = Join-Path -Path $GroupPolicyPath -ChildPath ('\User\Scripts\{0}scripts.ini' -f $(if ($ScriptType -eq 'PowerShell') { 'p' }))
+    $MachineScriptsIniPath = Join-Path -Path $GroupPolicyPath -ChildPath ('\Machine\Scripts\{0}scripts.ini' -f $(if ($ScriptType -eq 'PowerShell') { 'p' }))
 
     $UserScriptCSE = '{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B66650-4972-11D1-A7CA-0000F87571E3}'
     $MachineScriptCSE = '{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B6664F-4972-11D1-A7CA-0000F87571E3}'
