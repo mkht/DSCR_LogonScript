@@ -10,7 +10,7 @@ Configuration LogonScript
         [Parameter()]
         [ValidateSet('Logon', 'Logoff', 'Startup', 'Shutdown')]
         [string]
-        $Type = 'Logon',
+        $RunAt = 'Logon',
 
         [Parameter()]
         [ValidateRange(0, 99)]
@@ -42,7 +42,7 @@ Configuration LogonScript
     $UserScriptCSE = '{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B66650-4972-11D1-A7CA-0000F87571E3}'
     $MachineScriptCSE = '{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B6664F-4972-11D1-A7CA-0000F87571E3}'
 
-    switch ($Type) {
+    switch ($RunAt) {
         'Logon' {
             $TargetScriptsIniPath = $UserScriptsIniPath
             $TargetScriptCSE = $UserScriptCSE
@@ -173,7 +173,7 @@ Configuration LogonScript
     # ============================================================
     IniFile CmdLine {
         Path      = $TargetScriptsIniPath
-        Section   = $Type
+        Section   = $RunAt
         Key       = ('{0}CmdLine' -f $Index)
         Value     = $ScriptPath
         Encoding  = 'unicode'
@@ -182,7 +182,7 @@ Configuration LogonScript
 
     IniFile Parameters {
         Path      = $TargetScriptsIniPath
-        Section   = $Type
+        Section   = $RunAt
         Key       = ('{0}Parameters' -f $Index)
         Value     = $Parameters
         Encoding  = 'unicode'

@@ -24,7 +24,7 @@ Set Logon / Logoff / Startup / Shutdown script in the local group policy
 + [string] **Parameters** (Optional):
     + The parameter of the script.
 
-+ [string] **Type** (Optional):
++ [string] **RunAt** (Optional):
     + Specify when the script should be execute.
     + The default is `Logon`. (`Logon` / `Logoff` / `Startup` / `Shutdown`)
 
@@ -41,14 +41,14 @@ Configuration Example1
     Import-DscResource -ModuleName DSCR_LogonScript
     LogonScript logon1
     {
-        Type = 'Logon'
+        RunAt = 'Logon'
         ScriptPath = 'C:\first.bat'
         Index = 0
     }
     
     LogonScript logon2
     {
-        Type = 'Logon'
+        RunAt = 'Logon'
         ScriptPath = 'C:\second.bat'
         Parameters = 'param x'
         Index = 1
@@ -63,25 +63,25 @@ Configuration Example2
     Import-DscResource -ModuleName DSCR_LogonScript
     LogonScript logon
     {
-        Type = 'Logon'
+        RunAt = 'Logon'
         ScriptPath = 'C:\logon.bat'
     }
     
     LogonScript logoff
     {
-        Type = 'Logoff'
+        RunAt = 'Logoff'
         ScriptPath = 'C:\logoff.bat'
     }
     
     LogonScript startup
     {
-        Type = 'Startup'
+        RunAt = 'Startup'
         ScriptPath = 'C:\startup.bat'
     }
     
     LogonScript shutdown
     {
-        Type = 'Shutdown'
+        RunAt = 'Shutdown'
         ScriptPath = 'C:\shutdown.bat'
     }
 }
@@ -89,5 +89,8 @@ Configuration Example2
 
 ----
 ## ChangeLog
+### Unreleased
+ + **[BREAKING]** Change the param name from `Type` to `RunAt`
+
 ### 0.0.2
  + Initial public release
