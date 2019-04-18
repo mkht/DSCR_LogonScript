@@ -24,9 +24,15 @@
         $Parameters = ''
     )
 
+    # ============================================================
+    # Import dependency modules
+    # ============================================================
     Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
     Import-DscResource -ModuleName 'DSCR_IniFile'
 
+    # ============================================================
+    # Constant variables
+    # ============================================================
     $GroupPolicyPath = 'C:\Windows\System32\GroupPolicy'
     $GptIniPath = Join-Path -Path $GroupPolicyPath -ChildPath 'gpt.ini'
 
@@ -59,6 +65,9 @@
         }
     }
 
+    # ============================================================
+    # Rise a warning if the script path does not exist.
+    # ============================================================
     Script TestPath {
         SetScript  = {
             $null = $TestScript
@@ -77,6 +86,9 @@
         }
     }
 
+    # ============================================================
+    # Increment version numbers in the gpt.ini
+    # ============================================================
     Script IncrementGptIniVersion {
         SetScript  = {
             $local:ErrorActionPreference = 'Stop'
@@ -86,6 +98,7 @@
             $local:TargetExtensionsName = $using:TargetExtensionsName
 
             if (-not (Test-Path -LiteralPath $GptIniPath -PathType Leaf)) {
+                # Create gpt.ini if not exist.
                 ('[General]', "$TargetExtensionsName=[$TargetScriptCSE]", 'Version=65536') |`
                     Out-File -FilePath $GptIniPath -Encoding Ascii
             }
@@ -155,6 +168,9 @@
         DependsOn  = '[Script]TestPath'
     }
 
+    # ============================================================
+    # Create a file that defines the logon scripts.
+    # ============================================================
     cIniFile CmdLine {
         Path      = $TargetScriptsIniPath
         Section   = $Type
