@@ -91,6 +91,8 @@ Configuration Example2
 ## ChangeLog
 ### Unreleased
  + **[BREAKING]** Change the param name from `Type` to `RunAt`
+ + Change the dependencies module from [DSCR_IniFile](https://github.com/mkht/DSCR_IniFile) to [DSCR_FileContent](https://github.com/mkht/DSCR_FileContent)
+ + miscellaneous fixes.
 
 ### 0.0.2
  + Initial public release
