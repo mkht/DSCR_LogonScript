@@ -1,11 +1,11 @@
 DSCR_LogonScript
 ====
 
-DSC Resource for set Logon / Logoff / Startup / Shutdown script in local group policy
+DSC Resource for set Logon / Logoff / Startup / Shutdown script in the local group policy
 
 ----
 ## Installation
-You can install from [PowerShell Gallery](https://www.powershellgallery.com/packages/DSCR_LogonScript/).
+You can install this module from [PowerShell Gallery](https://www.powershellgallery.com/packages/DSCR_LogonScript/).
 ```Powershell
 Install-Module -Name DSCR_LogonScript
 ```
@@ -15,7 +15,7 @@ Install-Module -Name DSCR_LogonScript
 
 ----
 ## **LogonScript**
-Set Logon / Logoff / Startup / Shutdown script in local group policy
+Set Logon / Logoff / Startup / Shutdown script in the local group policy
 
 ### Properties
 + [string] **ScriptPath** (Require):
@@ -89,3 +89,5 @@ Configuration Example2
 
 ----
 ## ChangeLog
+### 0.0.2
+ + Initial public release
