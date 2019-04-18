@@ -13,7 +13,7 @@
     Author               = 'mkht'
 
     # Copyright statement for this module
-    Copyright            = '(c) 2018 mkht. All rights reserved.'
+    Copyright            = '(c) 2019 mkht. All rights reserved.'
 
     # Description of the functionality provided by this module
     Description          = 'DSC Resource for managing Logon / Logoff script'
