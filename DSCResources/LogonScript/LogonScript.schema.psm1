@@ -28,7 +28,7 @@ Configuration LogonScript
     # Import dependency modules
     # ============================================================
     Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
-    Import-DscResource -ModuleName 'DSCR_IniFile'
+    Import-DscResource -ModuleName 'DSCR_FileContent'
 
     # ============================================================
     # Constant variables
@@ -131,7 +131,7 @@ Configuration LogonScript
         TestScript = {
             $local:ErrorActionPreference = 'Stop'
 
-            Import-Module -Name DSCR_IniFile -Force -Verbose:$false
+            Import-Module -Name DSCR_FileContent -Force -Verbose:$false
 
             if (-not (Test-Path -LiteralPath $using:GptIniPath -PathType Leaf)) { return $false }
             $ret = Select-String -LiteralPath $using:GptIniPath -Pattern "$using:TargetExtensionsName=.*\[$using:TargetScriptCSE\].*" -Quiet
@@ -171,7 +171,7 @@ Configuration LogonScript
     # ============================================================
     # Create a file that defines the logon scripts.
     # ============================================================
-    cIniFile CmdLine {
+    IniFile CmdLine {
         Path      = $TargetScriptsIniPath
         Section   = $Type
         Key       = ('{0}CmdLine' -f $Index)
@@ -180,7 +180,7 @@ Configuration LogonScript
         DependsOn = '[Script]IncrementGptIniVersion'
     }
 
-    cIniFile Parameters {
+    IniFile Parameters {
         Path      = $TargetScriptsIniPath
         Section   = $Type
         Key       = ('{0}Parameters' -f $Index)

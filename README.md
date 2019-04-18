@@ -11,7 +11,7 @@ Install-Module -Name DSCR_LogonScript
 ```
 
 ## Dependencies
-* [DSCR_IniFile](https://github.com/mkht/DSCR_IniFile)
+* [DSCR_FileContent](https://github.com/mkht/DSCR_FileContent)
 
 ----
 ## **LogonScript**

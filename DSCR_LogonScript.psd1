@@ -18,7 +18,7 @@
     # Description of the functionality provided by this module
     Description          = 'DSC Resource for managing Logon / Logoff script'
 
-    RequiredModules      = @('DSCR_IniFile')
+    RequiredModules      = @('DSCR_FileContent')
 
     FunctionsToExport    = @()
 
