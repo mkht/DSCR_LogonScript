@@ -147,7 +147,7 @@ Configuration LogonScript
 
             if ($using:Index -ge 1) {
                 for ($i = 0; $i -lt $using:Index; $i++) {
-                    if ($null -eq $scriptsIni.$using:Type.('{0}CmdLine' -f $i)) {
+                    if ($null -eq $scriptsIni.$using:RunAt.('{0}CmdLine' -f $i)) {
                         #Get ordinals for number
                         $ordinalIndex = switch ($i % 10) {
                             1 { '{0}st' -f $i }
@@ -155,13 +155,13 @@ Configuration LogonScript
                             3 { '{0}rd' -f $i }
                             Default { '{0}th' -f $i }
                         }
-                        Write-Error ('The {0} entry of the {1} script is not exist. The Value of the Index ({2}) may be invalid.' -f $ordinalIndex, $using:Type, $using:Index)
+                        Write-Error ('The {0} entry of the {1} script is not exist. The Value of the Index ({2}) may be invalid.' -f $ordinalIndex, $using:RunAt, $using:Index)
                     }
                 }
             }
 
-            if ($scriptsIni.$using:Type.('{0}CmdLine' -f $using:Index) -ne $using:ScriptPath) { return $false }
-            if ($scriptsIni.$using:Type.('{0}Parameters' -f $using:Index) -ne $using:Parameters) { return $false }
+            if ($scriptsIni.$using:RunAt.('{0}CmdLine' -f $using:Index) -ne $using:ScriptPath) { return $false }
+            if ($scriptsIni.$using:RunAt.('{0}Parameters' -f $using:Index) -ne $using:Parameters) { return $false }
 
             return $true
         }
