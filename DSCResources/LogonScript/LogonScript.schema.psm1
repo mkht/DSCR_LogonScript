@@ -177,6 +177,7 @@ Configuration LogonScript
     # Create a file that defines the logon scripts.
     # ============================================================
     IniFile CmdLine {
+        Ensure    = 'Present'
         Path      = $TargetScriptsIniPath
         Section   = $RunAt
         Key       = ('{0}CmdLine' -f $Index)
@@ -186,6 +187,7 @@ Configuration LogonScript
     }
 
     IniFile Parameters {
+        Ensure    = 'Present'
         Path      = $TargetScriptsIniPath
         Section   = $RunAt
         Key       = ('{0}Parameters' -f $Index)
