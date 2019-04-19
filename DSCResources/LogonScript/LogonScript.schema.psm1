@@ -32,7 +32,7 @@ Configuration LogonScript
     # ============================================================
     # Import dependency modules
     # ============================================================
-    Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
+    Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
     Import-DscResource -ModuleName 'DSCR_FileContent'
 
     # ============================================================
