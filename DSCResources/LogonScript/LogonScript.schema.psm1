@@ -26,7 +26,12 @@ Configuration LogonScript
         [ValidateNotNull()]
         [AllowEmptyString()]
         [string]
-        $Parameters = ''
+        $Parameters = '',
+
+        [Parameter()]
+        [ValidateSet('Unspecified', 'True', 'False')]
+        [string]
+        $ExecutePSFirst = 'Unspecified'
     )
 
     # ============================================================
@@ -194,5 +199,31 @@ Configuration LogonScript
         Value     = $Parameters
         Encoding  = 'unicode'
         DependsOn = '[Script]IncrementGptIniVersion'
+    }
+
+    if ($ScriptType -eq 'PowerShell') {
+        if ($ExecutePSFirst -eq 'Unspecified') {
+            # Remove StartExecutePSFirst key
+            IniFile StartExecutePSFirst {
+                Ensure    = 'Absent'
+                Path      = $TargetScriptsIniPath
+                Section   = 'ScriptsConfig'
+                Key       = 'StartExecutePSFirst'
+                Encoding  = 'unicode'
+                DependsOn = '[Script]IncrementGptIniVersion'
+            }
+        }
+        else {
+            # Add StartExecutePSFirst key
+            IniFile StartExecutePSFirst {
+                Ensure    = 'Present'
+                Path      = $TargetScriptsIniPath
+                Section   = 'ScriptsConfig'
+                Key       = 'StartExecutePSFirst'
+                Value     = $ExecutePSFirst.ToLower()   # true or false
+                Encoding  = 'unicode'
+                DependsOn = '[Script]IncrementGptIniVersion'
+            }
+        }
     }
 }
