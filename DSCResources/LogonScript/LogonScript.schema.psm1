@@ -41,30 +41,36 @@ Configuration LogonScript
     $GroupPolicyPath = 'C:\Windows\System32\GroupPolicy'
     $GptIniPath = Join-Path -Path $GroupPolicyPath -ChildPath 'gpt.ini'
 
-    $UserScriptsIniPath = Join-Path -Path $GroupPolicyPath -ChildPath ('\User\Scripts\{0}scripts.ini' -f $(if ($ScriptType -eq 'PowerShell') { 'ps' }))
-    $MachineScriptsIniPath = Join-Path -Path $GroupPolicyPath -ChildPath ('\Machine\Scripts\{0}scripts.ini' -f $(if ($ScriptType -eq 'PowerShell') { 'ps' }))
+    $UserScriptsFolder = Join-Path -Path $GroupPolicyPath -ChildPath '\User\Scripts'
+    $MachineScriptsFolder = Join-Path -Path $GroupPolicyPath -ChildPath '\Machine\Scripts'
+    $UserScriptsIniFile = Join-Path -Path $UserScriptsFolder -ChildPath ('{0}scripts.ini' -f $(if ($ScriptType -eq 'PowerShell') { 'ps' }))
+    $MachineScriptsIniFile = Join-Path -Path $MachineScriptsFolder -ChildPath ('{0}scripts.ini' -f $(if ($ScriptType -eq 'PowerShell') { 'ps' }))
 
     $UserScriptCSE = '{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B66650-4972-11D1-A7CA-0000F87571E3}'
     $MachineScriptCSE = '{42B5FAAE-6536-11D2-AE5A-0000F87571E3}{40B6664F-4972-11D1-A7CA-0000F87571E3}'
 
     switch ($RunAt) {
         'Logon' {
-            $TargetScriptsIniPath = $UserScriptsIniPath
+            $Target = 'User'
+            $TargetScriptsIniFile = $UserScriptsIniFile
             $TargetScriptCSE = $UserScriptCSE
             $TargetExtensionsName = 'gPCUserExtensionNames'
         }
         'Logoff' {
-            $TargetScriptsIniPath = $UserScriptsIniPath
+            $Target = 'User'
+            $TargetScriptsIniFile = $UserScriptsIniFile
             $TargetScriptCSE = $UserScriptCSE
             $TargetExtensionsName = 'gPCUserExtensionNames'
         }
         'Startup' {
-            $TargetScriptsIniPath = $MachineScriptsIniPath
+            $Target = 'Computer'
+            $TargetScriptsIniFile = $MachineScriptsIniFile
             $TargetScriptCSE = $MachineScriptCSE
             $TargetExtensionsName = 'gPCMachineExtensionNames'
         }
         'Shutdown' {
-            $TargetScriptsIniPath = $MachineScriptsIniPath
+            $Target = 'Computer'
+            $TargetScriptsIniFile = $MachineScriptsIniFile
             $TargetScriptCSE = $MachineScriptCSE
             $TargetExtensionsName = 'gPCMachineExtensionNames'
         }
@@ -104,7 +110,7 @@ Configuration LogonScript
 
             if (-not (Test-Path -LiteralPath $GptIniPath -PathType Leaf)) {
                 # Create gpt.ini if not exist.
-                ('[General]', "$TargetExtensionsName=[$TargetScriptCSE]", 'Version=65536') |`
+                ('[General]', "$TargetExtensionsName=[$TargetScriptCSE]", 'Version=65537') |`
                     Out-File -FilePath $GptIniPath -Encoding ascii
             }
             else {
@@ -124,7 +130,12 @@ Configuration LogonScript
                 $VersionMatchInfo = $GptIniContent | Select-String -Pattern 'Version=(.+)'
                 if ($VersionMatchInfo.Matches.Groups -and $VersionMatchInfo.Matches.Groups[1].Success) {
                     [int]$CurrentVersionValue = [int]::Parse($VersionMatchInfo.Matches.Groups[1].Value)
-                    [int]$NewVersionValue = $CurrentVersionValue + 65536
+                    if ($TargetExtensionsName -eq 'gPCUserExtensionNames') {
+                        [int]$NewVersionValue = $CurrentVersionValue + 65536
+                    }
+                    else {
+                        [int]$NewVersionValue = $CurrentVersionValue + 1
+                    }
 
                     $private:Index = $VersionMatchInfo.LineNumber - 1
                     $GptIniContent[$private:Index] = ('Version={0}' -f $NewVersionValue)
@@ -142,8 +153,8 @@ Configuration LogonScript
             $ret = Select-String -LiteralPath $using:GptIniPath -Pattern "$using:TargetExtensionsName=.*\[$using:TargetScriptCSE\].*" -Quiet
             if ($false -eq $ret) { return $false }
 
-            if (-not (Test-Path -LiteralPath $using:TargetScriptsIniPath -PathType Leaf)) { return $false }
-            $scriptsIni = Get-IniFile -Path $using:TargetScriptsIniPath
+            if (-not (Test-Path -LiteralPath $using:TargetScriptsIniFile -PathType Leaf)) { return $false }
+            $scriptsIni = Get-IniFile -Path $using:TargetScriptsIniFile
 
             if ($using:Index -ge 1) {
                 for ($i = 0; $i -lt $using:Index; $i++) {
@@ -155,7 +166,7 @@ Configuration LogonScript
                             3 { '{0}rd' -f $i }
                             Default { '{0}th' -f $i }
                         }
-                        Write-Error ('The {0} entry of the {1} script is not exist. The Value of the Index ({2}) may be invalid.' -f $ordinalIndex, $using:RunAt, $using:Index)
+                        Write-Error ('The {0} entry of the {1} script is not exist. The Value of the Index ({2}) may invalid.' -f $ordinalIndex, $using:RunAt, $using:Index)
                     }
                 }
             }
@@ -178,7 +189,7 @@ Configuration LogonScript
     # ============================================================
     IniFile CmdLine {
         Ensure    = 'Present'
-        Path      = $TargetScriptsIniPath
+        Path      = $TargetScriptsIniFile
         Section   = $RunAt
         Key       = ('{0}CmdLine' -f $Index)
         Value     = $ScriptPath
@@ -188,11 +199,53 @@ Configuration LogonScript
 
     IniFile Parameters {
         Ensure    = 'Present'
-        Path      = $TargetScriptsIniPath
+        Path      = $TargetScriptsIniFile
         Section   = $RunAt
         Key       = ('{0}Parameters' -f $Index)
         Value     = $Parameters
         Encoding  = 'unicode'
         DependsOn = '[Script]IncrementGptIniVersion'
     }
+
+    # ============================================================
+    # Create necessary folders
+    # ============================================================
+    if ($Target -eq 'Computer') {
+        $Folder1 = Join-Path -Path $MachineScriptsFolder -ChildPath 'Startup'
+        $Folder2 = Join-Path -Path $MachineScriptsFolder -ChildPath 'Shutdown'
+    }
+    else {
+        $Folder1 = Join-Path -Path $UserScriptsFolder -ChildPath 'Logon'
+        $Folder2 = Join-Path -Path $UserScriptsFolder -ChildPath 'Logoff'
+    }
+
+    File Folder1 {
+        Ensure          = 'Present'
+        DestinationPath = $Folder1
+        Type            = 'Directory'
+    }
+
+    File Folder2 {
+        Ensure          = 'Present'
+        DestinationPath = $Folder2
+        Type            = 'Directory'
+    }
+
+    # ============================================================
+    # Update policy
+    # ============================================================
+    # Script GpUpdate {
+    #     SetScript  = { }
+    #     TestScript = {
+    #         $private:out = & gpupdate.exe /Force /Target:$using:Target
+    #         $private:out | Where-Object { ![string]::IsNullOrWhiteSpace($_) } | Write-Verbose
+    #         $true
+    #     }
+    #     GetScript  = {
+    #         return @{
+    #             Result = $TestScript
+    #         }
+    #     }
+    #     DependsOn  = '[IniFile]CmdLine', '[IniFile]Parameters'
+    # }
 }
