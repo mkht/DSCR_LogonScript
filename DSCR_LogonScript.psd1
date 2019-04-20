@@ -4,7 +4,7 @@
     # RootModule = ''
 
     # Version number of this module.
-    ModuleVersion        = '0.0.2'
+    ModuleVersion        = '0.9.1'
 
     # ID used to uniquely identify this module
     GUID                 = '9ef12355-7e97-4d79-818f-69fc50bccc2a'
@@ -41,7 +41,7 @@
 
             # IconUri = ''
 
-            ReleaseNotes = 'Initial alpha release (not for production use)'
+            ReleaseNotes = ''
         }
     }
 }

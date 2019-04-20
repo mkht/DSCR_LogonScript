@@ -107,10 +107,11 @@ Configuration Example3
 
 ----
 ## ChangeLog
-### Unreleased
+### 0.9.1
  + Add an new property `ScriptType`
  + **[BREAKING]** Change the param name from `Type` to `RunAt`
  + Change the dependencies module from [DSCR_IniFile](https://github.com/mkht/DSCR_IniFile) to [DSCR_FileContent](https://github.com/mkht/DSCR_FileContent)
+ + Improve stabilities.
  + miscellaneous fixes.
 
 ### 0.0.2
